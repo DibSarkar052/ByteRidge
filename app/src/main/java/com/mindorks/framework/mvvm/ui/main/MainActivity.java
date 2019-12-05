@@ -34,6 +34,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
 import com.mindorks.framework.mvvm.BR;
 import com.mindorks.framework.mvvm.BuildConfig;
 import com.mindorks.framework.mvvm.R;
@@ -53,19 +56,30 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import javax.inject.Inject;
 
-public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> implements MainNavigator, HasSupportFragmentInjector {
+public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewModel> implements MainNavigator, HasSupportFragmentInjector,QuestionCard.AnswerGiven {
 
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
     @Inject
     ViewModelProviderFactory factory;
+
+
+
+
+
+
     private ActivityMainBinding mActivityMainBinding;
     private SwipePlaceHolderView mCardsContainerView;
     private DrawerLayout mDrawer;
     private MainViewModel mMainViewModel;
     private NavigationView mNavigationView;
     private Toolbar mToolbar;
+    private TextView tv_attempt;
+    private TextView tv_correct;
+    private TextView tv_wrong;
+    private QuestionCard questionCard;
 
+    int ques_attempt=1;
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
         return intent;
@@ -182,6 +196,9 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
         mToolbar = mActivityMainBinding.toolbar;
         mNavigationView = mActivityMainBinding.navigationView;
         mCardsContainerView = mActivityMainBinding.cardsContainer;
+        tv_attempt = mActivityMainBinding.tvAttempt;
+        tv_correct = mActivityMainBinding.tvCorrect;
+        tv_wrong = mActivityMainBinding.tvWrong;
 
         setSupportActionBar(mToolbar);
         ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(
@@ -212,11 +229,15 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     }
 
     private void setupCardContainerView() {
+       questionCard = new QuestionCard();
+        questionCard.setListener(this);
+
+             //   .setListener(this);
         int screenWidth = ScreenUtils.getScreenWidth(this);
         int screenHeight = ScreenUtils.getScreenHeight(this);
 
         mCardsContainerView.getBuilder()
-                .setDisplayViewCount(3)
+                .setDisplayViewCount(4)
                 .setHeightSwipeDistFactor(10)
                 .setWidthSwipeDistFactor(5)
                 .setSwipeDecor(new SwipeDecor()
@@ -227,14 +248,25 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
                         .setRelativeScale(0.01f));
 
         mCardsContainerView.addItemRemoveListener(count -> {
+            System.out.println("counttt"+" "+count);
             if (count == 0) {
+                ques_attempt=0;
+                //tv_attempt.setText(String.valueOf(ques_attempt)+"/6");
                 // reload the contents again after 1 sec delay
                 new Handler(getMainLooper()).postDelayed(() -> {
                     //Reload once all the cards are removed
                     mMainViewModel.loadQuestionCards();
+                    ques_attempt=1;
+                    tv_attempt.setText(String.valueOf(ques_attempt)+"/6");
+                    questionCard.setListener(this);
+                    tv_wrong.setText("0/6");
+                    tv_correct.setText("0/6");
                 }, 800);
             } else {
                 mMainViewModel.removeQuestionCard();
+                ques_attempt+=1;
+                tv_attempt.setText(String.valueOf(ques_attempt)+"/6");
+
             }
         });
     }
@@ -278,6 +310,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
     }
 
     private void subscribeToLiveData() {
+
         mMainViewModel.getQuestionCardData().observe(this, questionCardDatas -> mMainViewModel.setQuestionDataList(questionCardDatas));
     }
 
@@ -286,4 +319,15 @@ public class MainActivity extends BaseActivity<ActivityMainBinding, MainViewMode
             mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
     }
+
+    @Override
+    public void getAnswerCount(int correct,int wrong) {
+
+        tv_correct.setText(String.valueOf(correct)+"/6");
+        tv_wrong.setText(String.valueOf(wrong)+"/6");
+
+        System.out.println("all count"+" "+correct+" "+wrong);
+
+    }
+
 }

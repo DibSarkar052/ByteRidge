@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="16dp"
+
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:gravity="center"
@@ -110,7 +110,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:minHeight="44dp" />
+                android:minHeight="40dp" />
 
             <Button
                 android:id="@+id/btn_option_2"
@@ -118,7 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:minHeight="44dp" />
+                android:minHeight="40dp" />
 
             <Button
                 android:id="@+id/btn_option_3"
@@ -126,7 +126,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:minHeight="44dp" />
+                android:minHeight="40dp" />
+            <Button
+                android:id="@+id/btn_option_4"
+                style="@style/Button.Secondary"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:minHeight="40dp" />
 
         </LinearLayout>
 
