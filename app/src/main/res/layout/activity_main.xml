@@ -99,7 +99,7 @@
                                 android:textSize="15dp"
                                 android:text="0/6"
                                 android:id="@+id/tv_correct"
-                                android:textColor="@color/light_blue"
+                                android:textColor="@color/green"
                                 android:textStyle="bold"
                                 android:layout_height="wrap_content"/>
 
